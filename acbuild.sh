@@ -7,7 +7,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 IMG_NAME="coreos.com/rkt/builder"
-VERSION="1.0.0"
+VERSION="1.0.1"
 ARCH=amd64
 OS=linux
 
