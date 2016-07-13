@@ -37,7 +37,7 @@ acbuild begin ./rootfs
 trap acbuildend EXIT
 
 acbuild $FLAGS set-name $IMG_NAME
-acbuild $FLAGS label add version v$VERSION
+acbuild $FLAGS label add version $VERSION
 acbuild $FLAGS set-user 0
 acbuild $FLAGS set-group 0
 acbuild $FLAGS environment add OS_VERSION sid
