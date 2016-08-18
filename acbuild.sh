@@ -7,7 +7,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 IMG_NAME="coreos.com/rkt/builder"
-VERSION="1.0.1"
+VERSION="1.0.2"
 ARCH=amd64
 OS=linux
 
@@ -40,6 +40,7 @@ acbuild $FLAGS set-name $IMG_NAME
 acbuild $FLAGS label add version $VERSION
 acbuild $FLAGS set-user 0
 acbuild $FLAGS set-group 0
+echo '{ "set": ["@rkt/default-whitelist", "mlock"] }' | acbuild isolator add "os/linux/seccomp-retain-set" -
 acbuild $FLAGS environment add OS_VERSION sid
 acbuild $FLAGS environment add GOPATH $ACI_GOPATH
 acbuild $FLAGS environment add BUILDDIR $BUILDDIR
