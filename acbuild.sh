@@ -7,7 +7,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 IMG_NAME="coreos.com/rkt/builder"
-VERSION="1.0.2"
+VERSION="1.1.0"
 ARCH=amd64
 OS=linux
 
@@ -17,7 +17,7 @@ BUILDDIR=/opt/build-rkt
 SRC_DIR=/opt/rkt
 ACI_GOPATH=/go
 
-DEBIAN_SID_DEPS="ca-certificates gcc libc6-dev make automake wget git golang-go cpio squashfs-tools realpath autoconf file xz-utils patch bc locales libacl1-dev libssl-dev libsystemd-dev gnupg"
+DEBIAN_SID_DEPS="ca-certificates gcc libc6-dev make automake wget git golang-go cpio squashfs-tools realpath autoconf file xz-utils patch bc locales libacl1-dev libssl-dev libsystemd-dev gnupg ruby ruby-dev rpm"
 
 function acbuildend() {
     export EXIT=$?;
@@ -27,7 +27,7 @@ function acbuildend() {
 echo "Generating debian sid tree"
 
 mkdir rootfs
-debootstrap --force-check-gpg --variant=minbase --components=main --include="${DEBIAN_SID_DEPS}" sid rootfs http://httpredir.debian.org/debian/
+debootstrap --variant=minbase --components=main --include="${DEBIAN_SID_DEPS}" sid rootfs http://httpredir.debian.org/debian/
 rm -rf rootfs/var/cache/apt/archives/*
 
 echo "Version: v${VERSION}"
@@ -51,5 +51,6 @@ acbuild $FLAGS set-working-dir $SRC_DIR
 acbuild $FLAGS copy-to-dir build.sh /scripts
 acbuild $FLAGS run /bin/mkdir -- -p $ACI_GOPATH
 acbuild $FLAGS run /bin/sh -- -c "GOPATH=${ACI_GOPATH} go get github.com/appc/spec/actool"
+acbuild $FLAGS run /usr/bin/gem -- install fpm
 acbuild $FLAGS set-exec /bin/bash /scripts/build.sh
 acbuild write --overwrite $ACI_FILE
