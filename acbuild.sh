@@ -7,7 +7,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 IMG_NAME="coreos.com/rkt/builder"
-VERSION="1.1.1"
+VERSION="1.2.0"
 ARCH=amd64
 OS=linux
 
@@ -17,7 +17,37 @@ BUILDDIR=/opt/build-rkt
 SRC_DIR=/opt/rkt
 ACI_GOPATH=/go
 
-DEBIAN_SID_DEPS="ca-certificates gcc libc6-dev make automake wget git golang-go cpio squashfs-tools realpath autoconf file xz-utils patch bc locales libacl1-dev libssl-dev libsystemd-dev gnupg ruby ruby-dev rpm"
+DEBIAN_SID_DEPS="ca-certificates \
+	gcc \
+	libc6-dev \
+	make \
+	automake \
+	wget \
+	git \
+	golang-go \
+	cpio \
+	squashfs-tools \
+	realpath \
+	autoconf \
+	file \
+	xz-utils \
+	patch \
+	bc \
+	locales \
+	libacl1-dev \
+	libssl-dev \
+	libsystemd-dev \
+	gnupg \
+	ruby \
+	ruby-dev \
+	rpm \
+	python \
+	python3 \
+	zlib1g-dev \
+	pkg-config \
+	libglib2.0-dev \
+	libpixman-1-dev \
+	libcap-dev"
 
 function acbuildend() {
     export EXIT=$?;
