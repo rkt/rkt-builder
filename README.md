@@ -34,7 +34,7 @@ Push the tag to GitHub:
         --volume src-dir,kind=host,source="$(pwd)" \
         --volume build-dir,kind=host,source="$(pwd)/release-build" \
         --interactive \
-        coreos.com/rkt/builder:v1.0.0
+        coreos.com/rkt/builder:1.0.0
 
 ## Overview
 
