@@ -20,7 +20,7 @@ Commit any changes to `acbuild.sh`, and push them.
 
 Add a signed tag:
 
-    $ GIT_COMMITTER_NAME="CoreOS Application Signing Key" GIT_COMMITTER_EMAIL="security@coreos.com" git tag -u $RKTSUBKEYID'!' -s v1.0.0 -m "rkt-builder v1.2.0"`
+    $ GIT_COMMITTER_NAME="CoreOS Application Signing Key" GIT_COMMITTER_EMAIL="security@coreos.com" git tag -u $RKTSUBKEYID'!' -s v1.2.0 -m "rkt-builder v1.2.0"`
 
 Push the tag to GitHub:
 
