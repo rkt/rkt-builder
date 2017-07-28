@@ -7,9 +7,10 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 IMG_NAME="coreos.com/rkt/builder"
-VERSION="1.2.0"
+VERSION="1.3.0"
 ARCH=amd64
 OS=linux
+DEBIAN_VERSION=buster
 
 FLAGS=${FLAGS:-""}
 ACI_FILE=rkt-builder-"${VERSION}"-"${OS}"-"${ARCH}".aci
@@ -54,10 +55,10 @@ function acbuildend() {
     acbuild --debug end && rm -rf rootfs && exit $EXIT;
 }
 
-echo "Generating debian sid tree"
+echo "Generating debian ${DEBIAN_VERSION} tree"
 
 mkdir rootfs
-debootstrap --variant=minbase --components=main --include="${DEBIAN_SID_DEPS}" sid rootfs http://httpredir.debian.org/debian/
+debootstrap --variant=minbase --components=main --include="${DEBIAN_SID_DEPS}" ${DEBIAN_VERSION} rootfs http://httpredir.debian.org/debian/
 rm -rf rootfs/var/cache/apt/archives/*
 
 echo "Version: v${VERSION}"
@@ -71,7 +72,7 @@ acbuild $FLAGS label add version $VERSION
 acbuild $FLAGS set-user 0
 acbuild $FLAGS set-group 0
 echo '{ "set": ["@rkt/default-whitelist", "mlock"] }' | acbuild isolator add "os/linux/seccomp-retain-set" -
-acbuild $FLAGS environment add OS_VERSION sid
+acbuild $FLAGS environment add OS_VERSION ${DEBIAN_VERSION}
 acbuild $FLAGS environment add GOPATH $ACI_GOPATH
 acbuild $FLAGS environment add BUILDDIR $BUILDDIR
 acbuild $FLAGS environment add SRC_DIR $SRC_DIR
