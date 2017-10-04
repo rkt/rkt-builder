@@ -28,13 +28,13 @@ Push the tag to GitHub:
 
 ### Building rkt-in-rkt
 
-    $ git clone github.com/coreos/rkt
+    $ git clone github.com/rkt/rkt
     $ cd rkt
     $ sudo rkt run \
         --volume src-dir,kind=host,source="$(pwd)" \
         --volume build-dir,kind=host,source="$(pwd)/release-build" \
         --interactive \
-        coreos.com/rkt/builder:1.2.0
+        coreos.com/rkt/builder:1.3.0
 
 ## Overview
 
