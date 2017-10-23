@@ -6,19 +6,34 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
+machine="$(uname -m)"
+
+case ${machine} in
+x86_64)
+    ACI_ARCH="amd64"
+    DEBIAN_SID_DEPS_EXTRA="gcc-aarch64-linux-gnu libc6-dev-arm64-cross"
+    ;;
+i386|aarch64|aarch64_be|armv6l|armv7l|armv7b|ppc64|ppc64le|s390x)
+    ACI_ARCH="${machine}"
+    ;;
+*)
+    echo "Unknown machine: ${machine}" 1>&2
+    exit 1
+    ;;
+esac
+
 IMG_NAME="coreos.com/rkt/builder"
 VERSION="1.3.0"
-ARCH=amd64
 OS=linux
 DEBIAN_VERSION=buster
 
 FLAGS=${FLAGS:-""}
-ACI_FILE=rkt-builder-"${VERSION}"-"${OS}"-"${ARCH}".aci
+ACI_FILE=rkt-builder-"${VERSION}"-"${OS}"-"${ACI_ARCH}".aci
 BUILDDIR=/opt/build-rkt
 SRC_DIR=/opt/rkt
 ACI_GOPATH=/go
 
-DEBIAN_SID_DEPS="ca-certificates \
+DEBIAN_SID_DEPS_BASE="ca-certificates \
 	gcc \
 	libc6-dev \
 	make \
@@ -48,7 +63,11 @@ DEBIAN_SID_DEPS="ca-certificates \
 	pkg-config \
 	libglib2.0-dev \
 	libpixman-1-dev \
-	libcap-dev"
+	libcap-dev \
+	libfdt-dev \
+"
+
+DEBIAN_SID_DEPS="${DEBIAN_SID_DEPS_BASE} ${DEBIAN_SID_DEPS_EXTRA}"
 
 function acbuildend() {
     export EXIT=$?;
@@ -82,6 +101,8 @@ acbuild $FLAGS set-working-dir $SRC_DIR
 acbuild $FLAGS copy-to-dir build.sh /scripts
 acbuild $FLAGS run /bin/mkdir -- -p $ACI_GOPATH
 acbuild $FLAGS run /bin/sh -- -c "GOPATH=${ACI_GOPATH} go get github.com/appc/spec/actool"
-acbuild $FLAGS run /usr/bin/gem -- install fpm
+if [[ "${ACI_ARCH}" == "amd64" ]]; then
+	acbuild $FLAGS run /usr/bin/gem -- install fpm
+fi
 acbuild $FLAGS set-exec /bin/bash /scripts/build.sh
 acbuild write --overwrite $ACI_FILE
